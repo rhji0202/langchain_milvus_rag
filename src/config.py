@@ -1,6 +1,12 @@
 """설정 관리 모듈"""
 import os
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+# .env 파일 로드 (프로젝트 루트 디렉토리에서)
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 # Windows에서 한글 출력을 위한 인코딩 설정
 if sys.platform == 'win32':
@@ -12,13 +18,10 @@ class Config:
     """애플리케이션 설정 클래스"""
     
     # API Keys
-    DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "sk-477e1de110644a7ca8273bca60639449")
+    DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")
     DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
     
-    JINAAI_API_KEY: str = os.getenv(
-        "JINAAI_API_KEY", 
-        "jina_46a8336db03c480e830c45cca221a9ccMSIy8vbCNvnvQTyfIozEG0kLHj6S"
-    )
+    JINAAI_API_KEY: str = os.getenv("JINAAI_API_KEY", "")
     
     # Milvus 설정
     # 참조: https://milvus.io/docs/ko/build_RAG_with_milvus_and_deepseek.md

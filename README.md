@@ -26,6 +26,9 @@ milvus/
 │       └── rag_pipeline.py
 ├── main.py                    # 벡터 인덱스 구축
 ├── test.py                    # RAG 질문 답변 테스트
+├── docker-compose.yml         # Docker Compose 설정
+├── embedEtcd.yaml             # etcd 설정 파일
+├── user.yaml                  # Milvus 사용자 설정 파일
 ├── pyproject.toml
 └── README.md
 ```
@@ -44,6 +47,32 @@ uv sync
 pip install -e .
 ```
 
+### Milvus 실행
+
+Docker Compose를 사용하여 Milvus를 실행합니다:
+
+```bash
+# Milvus 시작
+docker-compose up -d
+
+# Milvus 상태 확인
+docker-compose ps
+
+# Milvus 로그 확인
+docker-compose logs -f milvus-standalone
+
+# Milvus 중지
+docker-compose stop
+
+# Milvus 중지 및 컨테이너 삭제
+docker-compose down
+
+# Milvus 중지 및 볼륨까지 삭제 (데이터 삭제)
+docker-compose down -v
+```
+
+> **참고**: Milvus가 정상적으로 시작되려면 약 90초 정도 소요됩니다. Health check가 완료될 때까지 기다려주세요.
+
 ### 환경 변수 설정
 
 `.env` 파일을 생성하고 다음 환경 변수를 설정하세요:
@@ -55,6 +84,16 @@ MILVUS_URI=http://localhost:19530
 ```
 
 ## 사용 방법
+
+### 0. Milvus 실행 확인
+
+먼저 Milvus가 정상적으로 실행 중인지 확인하세요:
+
+```bash
+docker-compose ps
+```
+
+`milvus-standalone` 컨테이너의 상태가 `healthy`로 표시되어야 합니다.
 
 ### 1. 벡터 인덱스 구축
 
@@ -96,6 +135,8 @@ python test.py
 
 ## 설정 커스터마이징
 
+### 애플리케이션 설정
+
 `src/config.py`에서 다음 설정을 변경할 수 있습니다:
 
 - `CHUNK_SIZE`: 텍스트 청크 크기
@@ -103,6 +144,16 @@ python test.py
 - `SEARCH_K`: 검색 결과 개수
 - `LLM_MODEL`: LLM 모델 이름
 - `DOCS_PATHS`: 문서 경로 패턴
+
+### Milvus 설정
+
+Milvus의 기본 설정을 변경하려면 `user.yaml` 파일을 수정한 후 다음 명령으로 재시작하세요:
+
+```bash
+docker-compose restart
+```
+
+`embedEtcd.yaml` 파일은 내장 etcd의 설정을 관리합니다. 일반적으로 수정할 필요가 없습니다.
 
 ## 기술 스택
 
